@@ -1,0 +1,81 @@
+import google.generativeai as genai
+import os
+from typing import Dict, Any
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class GeminiAI:
+    def __init__(self):
+        # Initialize Gemini AI with API key
+        genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
+
+    async def analyze_token(self, token_data: Dict[str, Any]) -> str:
+        """
+        Analyze token data using Gemini AI.
+        """
+        try:
+            # Prepare prompt for token analysis
+            prompt = f"""Analyze this token (0-100 risk score, 100=highest risk):
+Price: {token_data.get('price', 'N/A')}
+Market Cap: {token_data.get('market_cap', 'N/A')}
+Volume: {token_data.get('volume_24h', 'N/A')}
+Holders: {token_data.get('holders', 'N/A')}
+
+Give a very brief analysis with risk score. Format:
+Risk Score: X/100
+Analysis: [2-3 sentences]
+Key Points: [bullet points]"""
+
+            # Generate analysis using Gemini (synchronous call)
+            response = self.model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            return f"Error in Gemini AI analysis: {str(e)}"
+
+    async def analyze_sentiment(self, social_data: Dict[str, Any]) -> str:
+        """
+        Analyze social media sentiment using Gemini AI.
+        """
+        try:
+            # Prepare prompt for sentiment analysis
+            prompt = f"""Analyze social sentiment (0-100 risk score, 100=highest risk):
+Twitter: {social_data.get('twitter_mentions', 'N/A')}
+Reddit: {social_data.get('reddit_posts', 'N/A')}
+Telegram: {social_data.get('telegram_messages', 'N/A')}
+Score: {social_data.get('sentiment_score', 'N/A')}
+
+Give a very brief analysis with risk score. Format:
+Risk Score: X/100
+Analysis: [2-3 sentences]
+Key Points: [bullet points]"""
+
+            # Generate sentiment analysis using Gemini (synchronous call)
+            response = self.model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            return f"Error in Gemini AI sentiment analysis: {str(e)}"
+
+    async def analyze_contract(self, contract_data: Dict[str, Any]) -> str:
+        """
+        Analyze smart contract using Gemini AI.
+        """
+        try:
+            # Prepare prompt for contract analysis
+            prompt = f"""Analyze contract (0-100 risk score, 100=highest risk):
+Address: {contract_data.get('address', 'N/A')}
+Type: {contract_data.get('type', 'N/A')}
+Features: {contract_data.get('features', 'N/A')}
+Issues: {contract_data.get('known_issues', 'N/A')}
+
+Give a very brief analysis with risk score. Format:
+Risk Score: X/100
+Analysis: [2-3 sentences]
+Key Points: [bullet points]"""
+
+            # Generate contract analysis using Gemini (synchronous call)
+            response = self.model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            return f"Error in Gemini AI contract analysis: {str(e)}" 
